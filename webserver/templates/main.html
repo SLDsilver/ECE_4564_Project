@@ -1,0 +1,88 @@
+<head>
+	<style type="text/css">
+		table.gridtable {
+			font-family: verdana,arial,sans-serif;
+			font-size:11px;
+			color:#333333;
+			border-width: 1px;
+			border-color: #666666;
+			border-collapse: collapse;
+			float: left;
+			text-align: left;
+			padding: 25px;
+			margin-right: 25px;
+			margin-left: 25px;
+			border-radius: 25px;
+		}
+		table.gridtable th {
+			font-weight: bold;
+			border-width: 1px;
+			padding: 8px;
+			border-style: solid;
+			border-color: #666666;
+			background-color: #aaaaaa;
+		}
+		table.gridtable td {
+			border-width: 1px;
+			padding: 8px;
+			border-style: solid;
+			border-color: #666666;
+			background-color: #ffffff;
+		}
+		table.gridtable caption {
+			font-weight: bold;
+			font-size: 20px;
+			text-align: center;
+			background-color: #002a6d;
+			color: #ffffff;
+			border-radius: 25px;
+		}
+		div.center_div {
+			position: absolute;
+			margin:  auto;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			width: 600px;
+			height: 200px;
+			background-color: #000000;
+			text-align: center;
+			vertical-align: middle;
+			padding: 25px;
+			border-radius: 25px;
+		}
+		div.table_container {
+			display:inline-block;
+			padding: 25px;
+			border-radius: 25px;
+			background-color: #cccccc;
+		}
+		body {
+			background-color: #000000;
+			background: url(background.png);
+		}
+	</style>
+	<title>Asteroids Stats</title>
+</head>
+
+<div class="center_div">
+	<div class="table_container">
+	<table class="gridtable">
+		<caption> Lifetime Statistics </caption>
+		{% for key, value in player.items() %}
+		<tr>
+			<th> {{ key }} </th>
+			<td> {{ value }} </td>
+		</tr>
+		{% endfor %}
+	<table class="gridtable">
+		<caption> Recent Game Statistics </caption>
+		{% for key, value in game.items() %}
+		<tr>
+			<th> {{ key }} </th>
+			<td> {{ value }} </td>
+		</tr>
+		{% endfor %}
+	</div>
+</div>
