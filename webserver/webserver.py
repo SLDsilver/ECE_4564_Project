@@ -37,8 +37,9 @@ def get_game_data(player_name = "test"):
         db = client['asteroids']
         collection = db['game']
         cursor = collection.find({'name':player_name})
-        for key,val in cursor:
-            game_data[key]=val
+        for document in cursor:
+            if document['stats']:
+                return document['stats']
 
     return game_data
 
@@ -56,10 +57,11 @@ def get_player_data(player_name = "test"):
         db = client['asteroids']
         collection = db['players']
         cursor = collection.find({'name':player_name})
-        for key,val in cursor:
-            game_data[key]=val
+        for document in cursor:
+            if document['stats']:
+                return document['stats']
 
     return player_data
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=80, debug=False)
