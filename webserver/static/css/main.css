@@ -1,0 +1,8 @@
+.floatedTable {
+    float:left;
+}
+.inlineTable {
+    display: inline-block;
+    margin: 0 auto;
+    border: 1;
+}
