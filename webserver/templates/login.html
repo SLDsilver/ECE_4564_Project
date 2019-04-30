@@ -1,16 +1,65 @@
 <html>
-  <head>
-    <title>Asteroids Login</title>
-  </head>
-  <body>
-    <div>
-      <h1>Enter Player Name</h1>
-      <br>
-      <form action="" method="post">
-        <input type="text" placeholder="Username" name="username" value="{{
-          request.form.username }}">
-        <input type="submit" value="Login">
-      </form>
-    </div>
-  </body>
+<head>
+  <style type="text/css">
+    table.gridtable {
+      font-family: verdana,arial,sans-serif;
+      font-size:11px;
+      color:#333333;
+      border-width: 1px;
+      border-color: #666666;
+      border-collapse: collapse;
+      float: left;
+      text-align: left;
+      padding: 25px;
+      margin-right: 25px;
+      margin-left: 25px;
+      border-radius: 25px;
+    }
+    div.center_div {
+      position: absolute;
+      margin:  auto;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 600px;
+      height: 200px;
+      background-color: #000000;
+      text-align: center;
+      vertical-align: middle;
+      padding: 25px;
+      border-radius: 25px;
+    }
+    div.table_container {
+      display:inline-block;
+      padding: 25px;
+      border-radius: 25px;
+      background-color: #cccccc;
+    }
+    br.custom_break {
+      font-weight: bold;
+			font-size: 20px;
+			text-align: center;
+			background-color: #002a6d;
+			color: #ffffff;
+			border-radius: 25px;
+    }
+    body {
+      background-color: #000000;
+      background: url(background.png);
+    }
+  </style>
+  <title>Asteroids Stats</title>
+</head>
+
+<div class="center_div">
+	<div class="table_container">
+    <h1>Enter Player Name</h1>
+    <br class="custom_break">
+    <form action="" method="post">
+    <input type="text" placeholder="Player" name="username" value="{{request.form.username}}">
+    <input type="submit" value="Login">
+    </form>
+  </div>
+</div>
 </html>
