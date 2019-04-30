@@ -74,9 +74,11 @@ class Missile(Entity):
 	
 class Asteroid(Entity):
 	
-	def __init__(self, position):
-		super(Asteroid, self).__init__(load_sprite('rock-normal.png'), position, random.randint(0, 360), random.uniform(2, 6))
-		self.sprite, rect = rotate_center(self.sprite, self.sprite.get_rect(), self.angle)
+	def __init__(self, position, size):
+		self.size = size
+		file = 'rock-big.png' if size == 2 else 'rock-normal.png' if size == 1 else 'rock-small.png'
+		super(Asteroid, self).__init__(load_sprite(file), position, random.randint(0, 360), random.uniform(2, 6))
+		self.sprite, self.rect = rotate_center(self.sprite, self.sprite.get_rect(), self.angle)
 		
 	
 class Game(object):
@@ -94,7 +96,7 @@ class Game(object):
 		self.bg_color = 0, 0, 0
 		self.FPS = 30
 		self.server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		self.server.bind(('localhost', 12000))
+		self.server.bind(('0.0.0.0', 12000))
 		self.connected = []
 		self.dead = []
 		
@@ -105,22 +107,26 @@ class Game(object):
 		self.asteroids = []
 		self.missiles = []
 		
-		###################
-		#self.players.append(Player((self.width//2, self.height//2)))
-		self.asteroids.append(Asteroid((0, 0)))
-		#self.asteroids.append(Asteroid((0, 0)))
-		#self.asteroids.append(Asteroid((0, 0)))
-		###################
-		
 	def update(self):
 		for missile in self.missiles:
 			missile.update()
 			for asteroid in self.asteroids:
-				if distance(missile.position, asteroid.position) < 50:
+				if distance(missile.position, asteroid.position) < 60:
+					pos = asteroid.position
+					size = asteroid.size
 					self.asteroids.remove(asteroid)
-					self.missiles.remove(missile)
+					if size > 0:
+						self.asteroids.append(Asteroid(pos, size - 1))
+						self.asteroids.append(Asteroid(pos, size - 1))
+					try:
+						self.missiles.remove(missile)
+					except:
+						continue
 			if missile.lifetime <= 0:
 				self.missiles.remove(missile)
+		if len(self.asteroids) < 1:
+			for i in range(1 - len(self.asteroids)):
+				self.asteroids.append(Asteroid((0, 0), 2))
 		for asteroid in self.asteroids:
 			asteroid.update()
 		for player in self.players:
@@ -128,13 +134,13 @@ class Game(object):
 			for asteroid in self.asteroids:
 				if distance(player.position, asteroid.position) < 60:
 					self.asteroids.remove(asteroid)
-					#self.dead.append(self.connected[self.players.index(player)])
+					self.dead.append(self.connected[self.players.index(player)])
 					del self.connected[self.players.index(player)]
 					self.players.remove(player)
 			for missile in self.missiles:
-				if distance(player.position, missile.position) < 15:
+				if distance(player.position, missile.position) < 20:
 					self.missiles.remove(missile)
-					#self.dead.append(self.connected[self.players.index(player)])
+					self.dead.append(self.connected[self.players.index(player)])
 					del self.connected[self.players.index(player)]
 					self.players.remove(player)
 		
@@ -169,28 +175,30 @@ class Game(object):
 			if addr and addr not in self.connected and addr not in self.dead:
 				self.connected.append(addr)
 				self.players.append(Player((self.width//2, self.height//2)))
-			i = self.connected.index(addr) if addr else 0
 			
-			if event.type == pygame.QUIT:
-				running = False
+			if addr and addr not in self.dead:
+				i = self.connected.index(addr) if addr else 0
 				
-			elif event.type == Game.REFRESH:
-				if 'd' in data:
-					self.players[i].angle -= 10
-					self.players[i].angle %= 360
-				if 'a' in data:
-					self.players[i].angle += 10
-					self.players[i].angle %= 360
-				if 'w' in data:
-					if self.players[i].speed < 15:
-						self.players[i].speed += 1
-				else:
-					if self.players[i].speed > 0:
-						self.players[i].speed -= 1
-				if 's' in data:
-					if self.players[i].fire():
-						self.missiles.append(Missile(self.players[i].position, self.players[i].angle, self.players[i].speed))
-				
+				if event.type == pygame.QUIT:
+					running = False
+					
+				elif event.type == Game.REFRESH:
+					if 'd' in data:
+						self.players[i].angle -= 10
+						self.players[i].angle %= 360
+					if 'a' in data:
+						self.players[i].angle += 10
+						self.players[i].angle %= 360
+					if 'w' in data:
+						if self.players[i].speed < 15:
+							self.players[i].speed += 1
+					else:
+						if self.players[i].speed > 0:
+							self.players[i].speed -= 1
+					if 's' in data:
+						if self.players[i].fire():
+							self.missiles.append(Missile(self.players[i].position, self.players[i].angle, self.players[i].speed))
+					
 			self.update()
 			self.render()
 			self.server.sendto(self.payload(), addr)
