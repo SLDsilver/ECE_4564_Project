@@ -3,10 +3,25 @@ from functools import wraps
 from pymongo import MongoClient
 
 app = Flask(__name__)
+mongoclient = None
+mongodb = None
 
 @app.route("/background.png")
 def handle_background():
     return send_file("background.png")
+
+@app.route("/send_data", methods=['POST'])
+def hangle_game_data():
+    collect = request.args.get("collection")
+    value = request.args.get("value")
+    feild = request.args.get("feild")
+    player = request.args.get("player")
+
+    collection = mongodb[collect]
+    mongodb.collection.insert({'name':player},{'$set':{'stats.'+str(feild): value}})
+
+    print(value,feild,player)
+    return "Received"
 
 @app.route("/",methods=['GET','POST'])
 def handle_login():
@@ -33,9 +48,7 @@ def get_game_data(player_name = "test"):
         game_data["Asteroids Destroyed"] = 27
         game_data["Place"] = 2
     else:
-        client = MongoClient('127.0.0.1', 27017)
-        db = client['asteroids']
-        collection = db['game']
+        collection = mongodb['game']
         cursor = collection.find({'name':player_name})
         for document in cursor:
             if document['stats']:
@@ -53,9 +66,7 @@ def get_player_data(player_name = "test"):
         player_data["Wins"] = 2
         player_data["Top 3 Placements"] = 5
     else:
-        client = MongoClient('127.0.0.1', 27017)
-        db = client['asteroids']
-        collection = db['players']
+        collection = mongodb['players']
         cursor = collection.find({'name':player_name})
         for document in cursor:
             if document['stats']:
@@ -64,4 +75,6 @@ def get_player_data(player_name = "test"):
     return player_data
 
 if __name__ == "__main__":
+    mongoclient = MongoClient('127.0.0.1', 27017)
+    mongodb = mongoclient['asteroids']
     app.run(host='0.0.0.0', port=80, debug=False)
