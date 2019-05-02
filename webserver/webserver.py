@@ -11,16 +11,27 @@ def handle_background():
     return send_file("background.png")
 
 @app.route("/send_data", methods=['POST'])
-def hangle_game_data():
-    collect = request.args.get("collection")
+def handle_game_data():
     value = request.args.get("value")
     feild = request.args.get("feild")
     player = request.args.get("player")
 
-    collection = mongodb[collect]
-    mongodb.collection.insert({'name':player},{'$set':{'stats.'+str(feild): value}})
+    feilds = ['Asteroids_Destroyed','Eliminations','Shots_Fired']
 
-    print(value,feild,player)
+    collection = mongodb["game"]
+    collection2 = mongodb["players"]
+    
+    collection.update_one({"name":player},{'$set':{'stats.'+feild:value}},upsert=True)
+    
+    if feild in feilds:
+        collection2.update_one({"name":player},{'$inc':{'stats.Career_'+feild:int(value)}},upsert=True)
+    
+    if feild == "Place":
+        collection2.update_one({"name":player},{'$inc':{'stats.Career_Wins':int(int(value)==1)}},upsert=True)
+        collection2.update_one({"name":player},{'$inc':{'stats.Career_Games':1}},upsert=True)
+
+    
+
     return "Received"
 
 @app.route("/",methods=['GET','POST'])
