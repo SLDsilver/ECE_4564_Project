@@ -87,7 +87,7 @@ class Game(object):
 					keys_payload += self.name
 
 					self.client.sendto(keys_payload.encode(), (self.ip, 12000))
-					data, addr = self.client.recvfrom(512)
+					data, addr = self.client.recvfrom(1024)
 					if data: self.entities = pickle.loads(data)
 
 					self.render()

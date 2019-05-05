@@ -203,7 +203,7 @@ class Game(object):
 		while running:
 			event = pygame.event.wait()
 
-			data, addr = self.server.recvfrom(512)
+			data, addr = self.server.recvfrom(1024)
 			data = data.decode().split('?') if data else ('', '')
 			if addr and addr not in self.connected and addr not in self.dead:
 				self.connected.append(addr)
