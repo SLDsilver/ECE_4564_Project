@@ -20,17 +20,15 @@ def handle_game_data():
 
     collection = mongodb["game"]
     collection2 = mongodb["players"]
-    
+
     collection.update_one({"name":player},{'$set':{'stats.'+feild:value}},upsert=True)
-    
+
     if feild in feilds:
         collection2.update_one({"name":player},{'$inc':{'stats.Career_'+feild:int(value)}},upsert=True)
-    
+
     if feild == "Place":
         collection2.update_one({"name":player},{'$inc':{'stats.Career_Wins':int(int(value)==1)}},upsert=True)
         collection2.update_one({"name":player},{'$inc':{'stats.Career_Games':1}},upsert=True)
-
-    
 
     return "Received"
 
@@ -52,7 +50,7 @@ def handle_player(player = "test"):
 
 def get_game_data(player_name = "test"):
     game_data = dict()
-    
+
     if(player_name == "test"):
         game_data["Time Survived"] = 8.32
         game_data["Eliminations"] = 1
@@ -69,8 +67,8 @@ def get_game_data(player_name = "test"):
 
 def get_player_data(player_name = "test"):
     player_data = dict()
-    
-    if(player_name == "test"): 
+
+    if(player_name == "test"):
         player_data["Most Time Survived"] = 23.5
         player_data["Career Eliminations"] = 18
         player_data["Career Asteroids Destroyed"] = 502

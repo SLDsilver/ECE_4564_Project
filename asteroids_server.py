@@ -1,3 +1,6 @@
+import os
+os.environ['SDL_AUDIODRIVER'] = 'dsp'
+
 import pygame
 import sys
 import random
@@ -89,7 +92,6 @@ class Asteroid(Entity):
 		super(Asteroid, self).__init__(load_sprite(file), position, random.randint(0, 360), random.uniform(4, 8))
 		self.sprite, self.rect = rotate_center(self.sprite, self.sprite.get_rect(), self.angle)
 
-
 class Game(object):
 
 	REFRESH, START, RESTART = range(pygame.USEREVENT, pygame.USEREVENT+3)
@@ -102,10 +104,11 @@ class Game(object):
 		self.screen = pygame.display.set_mode((self.width, self.height))
 		self.bg_color = 0, 0, 0
 		self.FPS = 30
-		self.server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		self.server.bind(('0.0.0.0', 12000))
 		self.connected = []
 		self.dead = []
+
+		self.server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		self.server.bind(('0.0.0.0', 12000))
 
 		pygame.time.set_timer(self.REFRESH, 1000 // self.FPS)
 
@@ -159,12 +162,14 @@ class Game(object):
 				if distance(player.position, asteroid.position) < 60:
 					self.asteroids.remove(asteroid)
 					self.kill_player(player,"Asteroid")
+					return
 
 			for missile in self.missiles:
 				if distance(player.position, missile.position) < 20:
 					self.get_player(missile.name).elims += 1
 					self.missiles.remove(missile)
 					self.kill_player(player,missle.name)
+					return
 
 	def render(self):
 		self.screen.fill(self.bg_color)
