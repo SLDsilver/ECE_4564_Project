@@ -16,11 +16,10 @@ def send_game(server,data=None):
             send_data(server,data['player'],key,value)
 
 def send_data(server,player="new_test",feild="Empty_Feild",value="Empty_value",collection="game"):
-	
-    requests.post("Http://"+server+"/send_data?feild="+feild+"&value="+str(value)+"&player="+player+"&collection="+collection)
-
-
-if __name__ == "__main__":
-	server="192.168.1.106"
-	send_game(server)
-	
+    try:
+        requests.post("Http://"+server+"/send_data?feild="+feild+"&value="+str(value)+"&player="+player+"&collection="+collection)
+    except requests.exceptions.RequestException:
+        print("Could not connect to webserver, is it down?")
+        return
+    except:
+        raise

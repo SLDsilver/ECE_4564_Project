@@ -98,14 +98,16 @@ class Game(object):
 
 	REFRESH, START, RESTART = range(pygame.USEREVENT, pygame.USEREVENT+3)
 
-	def __init__(self):
+	def __init__(self,webserver):
 		pygame.init()
+
+		self.webserver = webserver
 
 		self.width = WORLD_WIDTH
 		self.height = WORLD_HEIGHT
 		self.screen = pygame.display.set_mode((self.width, self.height))
 		self.bg_color = 0, 0, 0
-		self.FPS = 30
+		self.FPS = 60
 		self.connected = []
 		self.dead = []
 
@@ -133,7 +135,7 @@ class Game(object):
 		data['Asteroids_Destroyed'] = player.destroys
 		data['Place'] = player.place
 		data['Eliminated_By'] = killed_by
-		send_game(sys.argv[1],data)
+		send_game(self.webserver,data)
 		#Kill player
 		self.dead.append(self.connected[self.players.index(player)])
 		player.alive = False
@@ -201,7 +203,7 @@ class Game(object):
 		while running:
 			event = pygame.event.wait()
 
-			data, addr = self.server.recvfrom(1024)
+			data, addr = self.server.recvfrom(512)
 			data = data.decode().split('?') if data else ('', '')
 			if addr and addr not in self.connected and addr not in self.dead:
 				self.connected.append(addr)
@@ -237,6 +239,20 @@ class Game(object):
 				running = False
 
 
-Game().run()
-pygame.quit()
-sys.exit()
+if __name__ == "__main__":
+	try:
+		ip = sys.argv[1]
+
+		Game(ip).run()
+	except KeyboardInterrupt:
+		pygame.quit()
+		sys.exit()
+	except IndexError:
+		print("\n\n Error:  Please provide arguments: webserver IP")
+		sys.exit()
+	except:
+		raise
+		sys.exit()
+
+	pygame.quit()
+	sys.exit()

@@ -87,7 +87,7 @@ class Game(object):
 					keys_payload += self.name
 
 					self.client.sendto(keys_payload.encode(), (self.ip, 12000))
-					data, addr = self.client.recvfrom(1024)
+					data, addr = self.client.recvfrom(512)
 					if data: self.entities = pickle.loads(data)
 
 					self.render()
@@ -98,12 +98,17 @@ if __name__ == "__main__":
 	try:
 		ip = sys.argv[1]
 		user = sys.argv[2]
-	except:
+
+		asteroids_game = Game(sys.argv[1],sys.argv[2])
+		asteroids_game.run()
+	except KeyboardInterrupt:
+		pygame.quit()
+		sys.exit()
+	except IndexError:
 		print("\n\n Error:  Please provide arguments: server IP and username")
 		sys.exit()
-
-	asteroids_game = Game(sys.argv[1],sys.argv[2])
-	asteroids_game.run()
+	except:
+		raise
 
 	pygame.quit()
 	sys.exit()
