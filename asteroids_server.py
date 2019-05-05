@@ -107,7 +107,7 @@ class Game(object):
 		self.height = WORLD_HEIGHT
 		self.screen = pygame.display.set_mode((self.width, self.height))
 		self.bg_color = 0, 0, 0
-		self.FPS = 60
+		self.FPS = 30
 		self.connected = []
 		self.dead = []
 

@@ -21,7 +21,7 @@ class Game(object):
 		self.height = WORLD_HEIGHT
 		self.screen = pygame.display.set_mode((self.width, self.height))
 		self.bg_color = 0, 0, 0
-		self.FPS = 60
+		self.FPS = 30
 		self.entities = []
 		self.sprites = (load_sprite('spaceship-off.png'), load_sprite('rock-normal.png'), load_sprite('missile.png'))
 		self.is_alive = True
