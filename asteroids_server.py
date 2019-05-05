@@ -163,7 +163,7 @@ class Game(object):
 				continue
 
 			player.update()
-			player.place = len(self.players)
+			player.place = len(self.players)-len(self.dead)+1
 			for asteroid in self.asteroids:
 				if distance(player.position, asteroid.position) < 60:
 					self.asteroids.remove(asteroid)
