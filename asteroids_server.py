@@ -50,6 +50,8 @@ class Player(Entity):
 		self.destroys = 0
 		self.place = 0
 
+		self.alive = True
+
 	def render(self, screen):
 		new_sprite, rect = rotate_center(self.sprite, self.sprite.get_rect(), self.angle)
 		render_centered(new_sprite, screen, self.position)
@@ -134,8 +136,7 @@ class Game(object):
 		send_game(sys.argv[1],data)
 		#Kill player
 		self.dead.append(self.connected[self.players.index(player)])
-		del self.connected[self.players.index(player)]
-		self.players.remove(player)
+		player.alive = False
 
 
 	def update(self):
@@ -156,6 +157,9 @@ class Game(object):
 		for asteroid in self.asteroids:
 			asteroid.update()
 		for player in self.players:
+			if not player.alive:
+				continue
+
 			player.update()
 			player.place = len(self.players)
 			for asteroid in self.asteroids:
@@ -184,7 +188,7 @@ class Game(object):
 	def payload(self):
 		payload = []
 		for player in self.players:
-			payload.append(('P', player.position, player.angle, player.name))
+				payload.append(('P', player.position, player.angle, player.name, player.alive))
 		for asteroid in self.asteroids:
 			payload.append(('A', asteroid.position, asteroid.angle))
 		for missile in self.missiles:
