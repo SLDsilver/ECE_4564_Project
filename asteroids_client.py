@@ -5,7 +5,7 @@ import sys
 import pickle
 import socket
 import pygame
-from gpiozero import InputDevice
+#from gpiozero import InputDevice
 from asteroids_helper import *
 
 class Game(object):
@@ -66,10 +66,10 @@ class Game(object):
 
 
 	def run(self):
-		UP = InputDevice(17)
-		RIGHT = InputDevice(27)
-		LEFT = InputDevice(22)
-		BUTTON = InputDevice(23)
+#		UP = InputDevice(17)
+#		RIGHT = InputDevice(27)
+#		LEFT = InputDevice(22)
+#		BUTTON = InputDevice(23)
 		running = True
 		while running:
 			event = pygame.event.wait()
@@ -82,10 +82,10 @@ class Game(object):
 					keys = pygame.key.get_pressed()
 					keys_payload = ''
 
-					if keys[pygame.K_RIGHT] or keys[pygame.K_d] or RIGHT.is_active: keys_payload += 'd'
-					if keys[pygame.K_LEFT] or keys[pygame.K_a] or LEFT.is_active: keys_payload += 'a'
-					if keys[pygame.K_UP] or keys[pygame.K_w] or UP.is_active: keys_payload += 'w'
-					if keys[pygame.K_SPACE] or BUTTON.is_active: keys_payload += 's'
+					if keys[pygame.K_RIGHT] or keys[pygame.K_d]: keys_payload += 'd'
+					if keys[pygame.K_LEFT] or keys[pygame.K_a]: keys_payload += 'a'
+					if keys[pygame.K_UP] or keys[pygame.K_w]: keys_payload += 'w'
+					if keys[pygame.K_SPACE]: keys_payload += 's'
 
 					keys_payload += '?'
 					keys_payload += self.name
